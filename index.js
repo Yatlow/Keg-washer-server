@@ -91,7 +91,11 @@ app.post('/test-firestore', async (req, res) => {
     }
 });
 
-async function login(email,password){
+
+    
+// Login Route (Backend)
+app.post('/login', async (req, res) => {
+    const { email, password } = req.body; // Access email and password from the request body
     try {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const customToken = await admin.auth().createCustomToken(userCredential.user.uid);
@@ -100,9 +104,6 @@ async function login(email,password){
         res.status(401).json({ success: false, message: 'Authentication failed' });
     }
 }
-// Login Route (Backend)
-app.post('/login', async (req, res) => {
-    const { email, password } = req.body; // Access email and password from the request body
     // console.log(email, password); // Now it should log the email and password correctly
     await login(email,password);
     // console.log (authenticated+"auth Flag")
