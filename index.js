@@ -69,7 +69,7 @@ app.use(express.json());
         res.status(403).json({ message: 'Token verification failed' });
         console.log("auth faild")
     }
-
+    };
 
 
 app.post('/update', verifyToken, async (req, res) => {
