@@ -135,9 +135,6 @@ app.post('/login', async (req, res) => {
     } catch (error) {
         console.error('Error verifying custom token:', error);
         res.status(400).json({ success: false, error: 'Invalid custom token' });
-        res.json({ success: true });
-    } catch (error) {
-        res.status(401).json({ success: false, message: 'Authentication failed' });
     }
 });
 app.post('/logout', async (req, res) => {
