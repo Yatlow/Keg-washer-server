@@ -93,12 +93,11 @@ app.post('/test-firestore', async (req, res) => {
 
 async function login(email,password){
     try {
-        // Use the auth object to sign in
-        await signInWithEmailAndPassword(auth, email, password);
-        // Show the logged-in content and hide the login form
-        authenticated=1;
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const customToken = await admin.auth().createCustomToken(userCredential.user.uid);
+        res.json({ success: true, token: customToken });
     } catch (error) {
-        authenticated=0;
+        res.status(401).json({ success: false, message: 'Authentication failed' });
     }
 }
 // Login Route (Backend)
