@@ -55,6 +55,9 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
     const verifyToken = async (req, res, next) => {
+        console.log('Authorization header:', req.headers.authorization);
+        const decodedToken = await admin.auth().verifyIdToken(token);
+console.log('Decoded Token:', decodedToken);
     const token = req.headers.authorization?.split(' ')[1];
     if (!token) {
         console.log("unautherized")
