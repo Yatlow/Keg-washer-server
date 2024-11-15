@@ -57,9 +57,9 @@ app.use(express.json());
     const verifyToken = async (req, res, next) => {
         console.log('Authorization header:', req);
         console.log('Authorization header:', req.headers.authorization);
+        const token = req.headers.authorization?.split(' ')[1];       
         const decodedToken = await admin.auth().verifyIdToken(token);
-console.log('Decoded Token:', decodedToken);
-    const token = req.headers.authorization?.split(' ')[1];
+        console.log('Decoded Token:', decodedToken);
     if (!token) {
         console.log("unautherized")
         return res.status(403).json({ message: 'Unauthorized' });
