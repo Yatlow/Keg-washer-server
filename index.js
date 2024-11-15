@@ -55,6 +55,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
     const verifyToken = async (req, res, next) => {
+        console.log('Authorization header:', req);
         console.log('Authorization header:', req.headers.authorization);
         const decodedToken = await admin.auth().verifyIdToken(token);
 console.log('Decoded Token:', decodedToken);
