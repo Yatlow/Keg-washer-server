@@ -53,17 +53,36 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(express.json());
-let authenticated=0;
 
-app.post('/write', async (req, res) => {
+    const verifyToken = async (req, res, next) => {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) {
+        console.log("unautherized")
+        return res.status(403).json({ message: 'Unauthorized' });
+    }
     try {
-        const { first, last, born } = req.body;
-        const docRef = db.collection('users').doc('testDoc');
-        await docRef.set({ first, last, born });
-        res.status(200).json({ message: 'Document successfully written!' });
+        const decodedToken = await admin.auth().verifyIdToken(token);
+        req.user = decodedToken;
+        console.log("autherized")
+        next();
+    } catch (error) {
+        res.status(403).json({ message: 'Token verification failed' });
+        console.log("auth faild")
+    }
+
+
+
+app.post('/update', verifyToken, async (req, res) => {
+    try {
+        const parameterVals = req.body;
+        const docRef = db.collection('parameters').doc('updated');
+        await docRef.set(parameterVals);
+        res.status(200).json({ message: 'נתונים עודכנו בהצלחה!', data : parameterVals });
+        console.log("sucssesfuly updated")
     } catch (error) {
         console.error('Error writing document:', error);
-        res.status(500).json({ error: 'Error writing document' });
+        res.status(500).json({ error: 'תקלה בתקשורת לשרת' });
+        console.log("server error")
     }
 });
 app.post('/test-firestore', async (req, res) => {
