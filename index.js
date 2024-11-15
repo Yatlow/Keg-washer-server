@@ -121,7 +121,7 @@ app.post('/login', async (req, res) => {
     
 
         // Generate a session cookie or handle session management as needed
-        const sessionCookie = await admin.auth().createSessionCookie(customToken, {
+        const sessionCookie = await admin.auth().createSessionCookie(idToken, {
             expiresIn: 30 * 60 * 1000, // 1 hour
         });
         res.cookie('session', sessionCookie, { 
