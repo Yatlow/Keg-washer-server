@@ -55,17 +55,13 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
     const verifyToken = async (req, res, next) => {
-        console.log('Authorization header:', req);
-        console.log('Authorization header:', req.headers.authorization);
-        const token = req.headers.authorization?.split(' ')[1];       
-        const decodedToken = await admin.auth().verifyIdToken(token);
-        console.log('Decoded Token:', decodedToken);
-    if (!token) {
-        console.log("unautherized")
-        return res.status(403).json({ message: 'Unauthorized' });
-    }
+        const sessionCookie = req.cookies.session;
+     if (!sessionCookie) {
+        return res.status(403).json({ message: 'Unauthorized: No session cookie' });
+     }      
     try {
-        const decodedToken = await admin.auth().verifyIdToken(token);
+        const decodedToken = await admin.auth().verifySessionCookie(sessionCookie, true);
+        console.log('Decoded Token:', decodedToken);
         req.user = decodedToken;
         console.log("autherized")
         next();
@@ -74,6 +70,7 @@ app.use(express.json());
         console.log("auth faild")
     }
     };
+
 
 
 app.post('/update', verifyToken, async (req, res) => {
@@ -119,8 +116,26 @@ app.post('/login', async (req, res) => {
     const { email, password } = req.body; // Access email and password from the request body
     try {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        const customToken = await admin.auth().createCustomToken(userCredential.user.uid);
-        res.json({ success: true, token: customToken });
+        const idToken = await userCredential.user.getIdToken();
+        // Verify the custom token (optional, for added security)
+    
+
+        // Generate a session cookie or handle session management as needed
+        const sessionCookie = await admin.auth().createSessionCookie(customToken, {
+            expiresIn: 30 * 60 * 1000, // 1 hour
+        });
+        res.cookie('session', sessionCookie, { 
+            httpOnly: true,
+            secure: true,  // Ensure this is only sent over HTTPS
+            maxAge: 30 * 60 * 1000 // 1 hour
+        });
+
+ 
+        res.status(200).json({ success: true });
+    } catch (error) {
+        console.error('Error verifying custom token:', error);
+        res.status(400).json({ success: false, error: 'Invalid custom token' });
+        res.json({ success: true });
     } catch (error) {
         res.status(401).json({ success: false, message: 'Authentication failed' });
     }
