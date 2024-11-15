@@ -90,8 +90,6 @@ app.post('/test-firestore', async (req, res) => {
         });
     }
 });
-
-
     
 // Login Route (Backend)
 app.post('/login', async (req, res) => {
@@ -102,17 +100,6 @@ app.post('/login', async (req, res) => {
         res.json({ success: true, token: customToken });
     } catch (error) {
         res.status(401).json({ success: false, message: 'Authentication failed' });
-    }
-}
-    // console.log(email, password); // Now it should log the email and password correctly
-    await login(email,password);
-    // console.log (authenticated+"auth Flag")
-    res.json({ success: authenticated });
-    if (authenticated===1) {
-        res=1;
-        // res.json({ message: 'Login successful' });
-    } else if (authenticated===0){
-        // res.status(401).json({ message: 'Login failed' });
     }
 });
 app.post('/logout', async (req, res) => {
