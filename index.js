@@ -98,7 +98,6 @@ app.post('/login', async (req, res) => {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const customToken = await admin.auth().createCustomToken(userCredential.user.uid);
         res.json({ success: true, token: customToken });
-        console.log(customToken)
     } catch (error) {
         res.status(401).json({ success: false, message: 'Authentication failed' });
     }
