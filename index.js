@@ -6,7 +6,7 @@ import { getAuth, signInWithEmailAndPassword, signOut , sendPasswordResetEmail }
 import admin from 'firebase-admin';
 import { getFirestore } from 'firebase-admin/firestore';
 import cookieParser from 'cookie-parser';
-app.use(cookieParser());
+
 
 // Load environment variables
 dotenv.config();
@@ -32,6 +32,8 @@ admin.initializeApp({
 const db = getFirestore();
 
 const app = express();
+
+app.use(cookieParser());
 
 const allowedOrigins = [
     'https://yatlow.github.io',
