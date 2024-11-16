@@ -5,6 +5,8 @@ import { initializeApp } from 'firebase/app';
 import { getAuth, signInWithEmailAndPassword, signOut , sendPasswordResetEmail } from 'firebase/auth';
 import admin from 'firebase-admin';
 import { getFirestore } from 'firebase-admin/firestore';
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
 
 // Load environment variables
 dotenv.config();
