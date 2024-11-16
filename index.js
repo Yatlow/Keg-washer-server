@@ -71,19 +71,21 @@ app.use(express.json());
     }
     };
 
-
-
 app.post('/update', verifyToken, async (req, res) => {
     try {
         const parameterVals = req.body;
+        if (!parameterVals) {
+            throw new Error("Invalid parameter values");
+        }
+
         const docRef = db.collection('parameters').doc('updated');
         await docRef.set(parameterVals);
-        res.status(200).json({ message: 'נתונים עודכנו בהצלחה!', data : parameterVals });
-        console.log("sucssesfuly updated")
+
+        res.status(200).json({ message: 'נתונים עודכנו בהצלחה!', data: parameterVals });
+        console.log('Successfully updated');
     } catch (error) {
-        console.error('Error writing document:', error);
-        res.status(500).json({ error: 'תקלה בתקשורת לשרת' });
-        console.log("server error")
+        console.error('Error in /update route:', error.message);
+        res.status(500).json({ error: 'Server error' });
     }
 });
 app.post('/test-firestore', async (req, res) => {
